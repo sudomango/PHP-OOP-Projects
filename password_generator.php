@@ -1,6 +1,6 @@
 <?php
 
-declare(use_strict = 1);
+declare(strict_types=1);
 
 class PasswordGenerator
 {
