@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
 require_once "ustring_interface.php";
-declare(use_strict = 1);
 
 class Ustring
 {
@@ -9,7 +9,42 @@ class Ustring
 
     function __construct(string $some_text)
     {
+        mb_internal_encoding("UTF-8");
+        mb_regex_encoding("UTF-8");
         $this->content = $some_text;
+    }
+
+    function reverse()
+    {
+        $chars = mb_str_split($this->content, 1, "UTF-8");
+        return implode("", array_reverse($chars));
+    }
+
+    function substr(int $start_index, int $length): string
+    {
+        if ($length === 0) return "";
+        $str_length = mb_strlen($this->content, "UTF-8");
+
+        $result_string = "";
+        if ($length > 0) {
+            for ($i = $start_index; $i < $start_index + $length; $i++) {
+                if (in_array($i, range(-$str_length, $str_length + 1))) {
+                    $result_string .= mb_substr($this->content, $i, 1, "UTF-8");
+                }
+            }
+        } else {
+            for ($i = $start_index; $i > $start_index - abs($length); $i--) {
+                if (in_array($i, range(-$str_length, $str_length + 1))) {
+                    $result_string .= mb_substr($this->content, $i, 1, "UTF-8");
+                }
+            }
+        }
+        return $result_string;
+    }
+
+    function slice(int $start_index, int $length): string
+    {
+        return $this->substr($start_index, $length);
     }
 
     function at(int $index): string
@@ -30,10 +65,7 @@ class Ustring
 
     function count(string $substring): int
     {
-        # В качестве альтернативы можно воспользоваться встроенной функцией mb_substr_count.
-        $result_array = [];
-        preg_match_all("/$substring/misu", $this->content, $result_array);
-        return count($result_array);
+        return mb_substr_count($this->content, $substring);
     }
 
     function length(): int
@@ -41,24 +73,45 @@ class Ustring
         return mb_strlen($this->content, "UTF-8");
     }
 
-    function index(string $substring, int $position): int
+    function split(): array
+    {
+        return mb_str_split($this->content, 1, "UTF-8");
+    }
+
+    function replace(string $find, string $replace, bool $ignore_case = False): string
+    {
+        if ($ignore_case) return mb_eregi_replace($find, $replace, $this->content);
+        else return mb_ereg_replace($find, $replace, $this->content);
+    }
+
+    function index(string $substring, int $position = 0): int
     {
         return mb_strpos($this->content, $substring, $position, "UTF-8");
     }
 
-    function rindex(string $substring, int $position): int
+    function rindex(string $substring, int $position = -1): int
     {
         return mb_strrpos($this->content, $substring, $position, "UTF-8");
     }
 
-    function lfind(string $substring, int $position): int
+    function lfind(string $substring, int $position = 0): int
     {
         return $this->index($substring, $position);
     }
 
-    function rfind(string $substring, int $position): int
+    function rfind(string $substring, int $position = -1): int
     {
         return $this->rindex($substring, $position);
+    }
+
+    function lower()
+    {
+        return mb_strtolower($this->content, "UTF-8");
+    }
+
+    function upper()
+    {
+        return mb_strtoupper($this->content, "UTF-8");
     }
 
     # Проверяет, состоит ли строка только из буквенных символов.
