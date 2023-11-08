@@ -6,7 +6,7 @@ require_once "cipher_interface.php";
 
 # Классический Шифр Цезаря для английского и русского алфавита.
 
-class CaesarStand
+class CaesarStand implements CaesarStandInterface
 {
     private $alphabet;
 
@@ -48,7 +48,7 @@ class CaesarStand
 # Немного нестандартный шифр Цезаря, который использует не весь алфавит целиком, а только буквы, представленные в самой строке.
 # С точки зрения "секретности" такой шифр может оказаться менее полезным, но с точки зрения алгоритмической реализации, он немного интереснее.
 
-class Caesar
+class Caesar implements CaesarInterface
 {
     public function encode(string $input_string, int $step, bool $decode = False): string
     {
@@ -81,9 +81,9 @@ class Caesar
     }
 }
 
-# Реализация шифра Вернана - один из простейших шифров, тем не менее, при выполнении некоторых условий, обладает абсолютной криптографической стойкостью.
+# Реализация шифра Вернама - один из простейших шифров, тем не менее, при выполнении некоторых условий, обладает абсолютной криптографической стойкостью.
 
-class Vernam
+class Vernam implements VernamInterface
 {
     public function encode(string $input_string, int $secret_key = 313): array
     {
