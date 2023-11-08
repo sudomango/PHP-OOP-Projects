@@ -14,6 +14,18 @@ class Ustring implements UstringInterface
         $this->content = $some_text;
     }
 
+    public function get_content(): string
+    {
+        return $this->content;
+    }
+
+    # Установить новое значение для внутреннего содержимого объекта Ustring.
+    public function set_content(string $new_string): bool
+    {
+        $this->content = $new_string;
+        return True;
+    }
+
     # Перевернуть содержимое строки задом наперёд.
     public function reverse(): string
     {

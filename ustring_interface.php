@@ -1,9 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 interface UstringInterface
 {
+    public function get_content(): string;
+    public function set_content(string $new_string): bool;
+        
     public function reverse(): string;
     public function substr(int $start_index, int $length): string;
     public function slice(int $start_index, int $length): string;
