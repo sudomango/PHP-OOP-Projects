@@ -1,6 +1,8 @@
 <?php
 
+declare(strict_types = 1);
 require_once "unicode_string.php";
+require_once "cipher_interface.php";
 
 # Классический Шифр Цезаря для английского и русского алфавита.
 
