@@ -27,17 +27,17 @@ class Ustring implements UstringInterface
     }
 
     # Перевернуть содержимое строки задом наперёд.
-    public function reverse(): string
+    public function reverse(): Ustring
     {
         $chars = mb_str_split($this->content, 1);
-        return implode("", array_reverse($chars));
+        return new Ustring(implode("", array_reverse($chars)));
     }
 
     # Получить подстроку из исходной строки по начальному индексу и длине. В этом методе есть немного "магии".
     # Он реализован так, что мы можем задавать отрицательные значения как для индекса, так и для длины подстроки.
     # Если длина отрицательная, то символы будут собираться в обратную сторону: от конца исходной строки к её началу.
     # Например: $ustring->substr(-1, -3) = мы получим подстроку, содержащую символы из исходной строки с индексами -1, -2, -3.
-    public function substr(int $start_index, int $length): string
+    public function substr(int $start_index, int $length): Ustring
     {
         if ($length === 0) return "";
         $str_length = mb_strlen($this->content);
@@ -56,25 +56,25 @@ class Ustring implements UstringInterface
                 }
             }
         }
-        return $result_string;
+        return new Ustring($result_string);
     }
 
     # Синоним метода substr для почитателей языка Python.
-    public function slice(int $start_index, int $length): string
+    public function slice(int $start_index, int $length): Ustring
     {
         return $this->substr($start_index, $length);
     }
 
     # Получить символ строки по его индексу. Особенность данного метода в том, что он умеет гулять "по кругу".
     # То есть после достижения конца строки, он перейдёт на её нулевой элемент, а по достижению самого начала = на последний.
-    public function at(int $index): string
+    public function at(int $index): Ustring
     {
         $length = mb_strlen($this->content);
         if ($index >= $length) $index %= $length;
         if ($index < 0) {
             while ($index < 0) $index += $length;
         }
-        return mb_substr($this->content, $index, 1);
+        return new Ustring(mb_substr($this->content, $index, 1));
     }
 
     # Проверить, есть ли данная подстрока или символ в исходной строке.
@@ -102,10 +102,10 @@ class Ustring implements UstringInterface
     }
 
     # Заменить одну подстроку на другую. Поиск подстроки можно вести как с учётом регистра символов, так и без учёта регистра.
-    public function replace(string $find, string $replace, bool $ignore_case = False): string
+    public function replace(string $find, string $replace, bool $ignore_case = False): Ustring
     {
-        if ($ignore_case) return mb_eregi_replace($find, $replace, $this->content);
-        else return mb_ereg_replace($find, $replace, $this->content);
+        if ($ignore_case) return new Ustring(mb_eregi_replace($find, $replace, $this->content));
+        else return new Ustring(mb_ereg_replace($find, $replace, $this->content));
     }
 
     # Поиск первого вхождения указанного символа или подстроки в исходную строку. Можно указать с какого индекса начинать поиск.
@@ -133,15 +133,15 @@ class Ustring implements UstringInterface
     }
 
     # Перевод всех символов строки в нижний регистр.
-    public function lower(): string
+    public function lower(): Ustring
     {
-        return mb_strtolower($this->content);
+        return new Ustring(mb_strtolower($this->content));
     }
 
     # Перевод всех символов строки в верхний регистр (грубо говоря, Caps Lock).
-    public function upper(): string
+    public function upper(): Ustring
     {
-        return mb_strtoupper($this->content);
+        return new Ustring(mb_strtoupper($this->content));
     }
 
     # Проверяет, состоит ли строка только из буквенных символов.
