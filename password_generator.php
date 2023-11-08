@@ -13,7 +13,7 @@ class PasswordGenerator
     {
         $this->letters_a = range('A', 'Z');
         $this->letters_b = range('a', 'z');
-        $this->numbers = range(0, 9);
+        $this->numbers = range('0', '9');
         $this->symbols = ['.', ',', '!', '#', '$', '%', '&', '*', '(', ')', '+', '-', '/', ';', '~', '<', '>'];
     }
 
