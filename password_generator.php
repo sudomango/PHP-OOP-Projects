@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types=1);
+require_once "passgen_interface.php";
 
-class PasswordGenerator
+class PasswordGenerator implements PassGenInterface
 {
     private $letters_a;
     private $letters_b;
