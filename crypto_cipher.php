@@ -8,9 +8,10 @@ class CaesarStand
 {
     private $alphabet;
 
-    function __construtct()
+    function __construct()
     {
-        $this->alphabet = array_merge(range('A', 'Z'), range('a', 'z'), range('А', 'Я'), range('а', 'я'), range('0', '9'));
+        # Алфавит будет содержать коды для символов "A".."Z", "a".."z", "А".."я", "0".."9" в кодировке UTF-8.
+        $this->alphabet = array_merge(range(65, 90), range(97, 122), range(1040, 1103), range(48, 57));
     }
 
     public function encode(string $input_string, int $step, bool $decode = False): string
@@ -19,14 +20,19 @@ class CaesarStand
 
         $result_string = "";
         $user_string = new Ustring($input_string);
-        $alpha_length = mb_strlen($this->alphabet);
+        $alpha_length = count($this->alphabet);
 
         for ($index = 0; $index < $user_string->length(); $index++) {
-            $key_in_array = array_search($user_string->at($index), $this->alphabet);
-            $new_key = !$decode ? $key_in_array + $step : $key_in_array - $step;
-            if ($new_key >= $alpha_length) $new_key %= $alpha_length;
-            else while ($new_key < 0) $new_key += $alpha_length;
-            $result_string .= $this->alphabet[$new_key];
+            $char_ord = mb_ord($user_string->at($index));
+            if (in_array($char_ord, $this->alphabet)) {
+                $key_in_array = array_search($char_ord, $this->alphabet);
+                $new_key = !$decode ? $key_in_array + $step : $key_in_array - $step;
+                if ($new_key >= $alpha_length) $new_key %= $alpha_length;
+                else while ($new_key < 0) $new_key += $alpha_length;
+                $result_string .= mb_chr($this->alphabet[$new_key]);
+            } else {
+                $result_string .= $user_string->at($index);
+            }
         }
         return $result_string;
     }
@@ -70,5 +76,45 @@ class Caesar
     public function decode(string $input_string, int $step): string
     {
         return $this->encode($input_string, $step, $decode = True);
+    }
+}
+
+# Реализация шифра Вернана - один из простейших шифров, тем не менее, при выполнении некоторых условий, обладает абсолютной криптографической стойкостью.
+
+class Vernam
+{
+    public function encode(string $input_string, int $secret_key = 313): array
+    {
+        $chars = mb_str_split($input_string);
+        $result_array = array();
+        foreach ($chars as $char) {
+            $ord = mb_ord($char);
+            array_push($result_array, $ord ^ $secret_key);
+        }
+        return $result_array;
+    }
+
+    public function decode(array $code_array, int $secret_key = 313): string
+    {
+        $result_string = "";
+        foreach ($code_array as $code) {
+            $char = mb_chr($code ^ $secret_key);
+            $result_string .= $char;
+        }
+        return $result_string;
+    }
+}
+
+class CryptoCipher
+{
+    public $Caesar;
+    public $CaesarStand;
+    public $Vernam;
+
+    function __construct()
+    {
+        $this->Caesar = new Caesar();
+        $this->CaesarStand = new CaesarStand();
+        $this->Vernam = new Vernam();
     }
 }
