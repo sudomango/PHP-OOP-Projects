@@ -6,7 +6,7 @@ interface UstringInterface
 {
     public function get_content(): string;
     public function set_content(string $new_string): bool;
-        
+
     public function reverse(): Ustring;
     public function substr(int $start_index, int $length): Ustring;
     public function slice(int $start_index, int $length): Ustring;

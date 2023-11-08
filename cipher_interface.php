@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-interface CaesarStandInterface
+interface CaesarInterface
 {
     public function encode(string $input_string, int $step, bool $decode = False): string;
     public function decode(string $input_string, int $step): string;
 }
 
-interface CaesarInterface
+interface CaesarModInterface
 {
     public function encode(string $input_string, int $step, bool $decode = False): string;
     public function decode(string $input_string, int $step): string;

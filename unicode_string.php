@@ -147,30 +147,30 @@ class Ustring implements UstringInterface
     # Проверяет, состоит ли строка только из буквенных символов.
     public function isalpha(): bool
     {
-        return preg_match("/^\w+$/misu", $this->content);
+        return (bool) preg_match("/^\w+$/misu", $this->content);
     }
 
     # Проверяет, состоит ли строка только из буквенных символов и цифр.
     public function isalnum(): bool
     {
-        return preg_match("/^[\w\d]+$/misu", $this->content);
+        return (bool) preg_match("/^[\w\d]+$/misu", $this->content);
     }
 
     # Проверяет, состоит ли строка только из цифр (0 .. 9).
     public function isdigit(): bool
     {
-        return preg_match("/^\d+$/", $this->content);
+        return (bool) preg_match("/^\d+$/", $this->content);
     }
 
     # Проверяет, является ли строка записью произвольного целого числа. Допустимые форматы записи: "+123", "1080", "-312".
     public function isinteger(): bool
     {
-        return preg_match("/^[+-]?\d+$/", $this->content);
+        return (bool) preg_match("/^[+-]?\d+$/", $this->content);
     }
 
     # Проверяет, является ли строка записью произвольного числа (целого или вещественного). В теле строки допускается одна разделительная точка.
     public function isnumber(): bool
     {
-        return preg_match("/^[+-]?\d+[\.]?\d*$/", $this->content);
+        return (bool) preg_match("/^[+-]?\d+[\.]?\d*$/", $this->content);
     }
 }

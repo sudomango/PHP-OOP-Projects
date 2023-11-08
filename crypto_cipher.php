@@ -4,9 +4,9 @@ declare(strict_types = 1);
 require_once "unicode_string.php";
 require_once "cipher_interface.php";
 
-# Классический Шифр Цезаря для английского и русского алфавита.
+# Классический шифр Цезаря для английского и русского алфавита.
 
-class CaesarStand implements CaesarStandInterface
+class Caesar implements CaesarInterface
 {
     private $alphabet;
 
@@ -25,7 +25,7 @@ class CaesarStand implements CaesarStandInterface
         $alpha_length = count($this->alphabet);
 
         for ($index = 0; $index < $user_string->length(); $index++) {
-            $char_ord = mb_ord($user_string->at($index));
+            $char_ord = mb_ord($user_string->at($index)->get_content());
             if (in_array($char_ord, $this->alphabet)) {
                 $key_in_array = array_search($char_ord, $this->alphabet);
                 $new_key = !$decode ? $key_in_array + $step : $key_in_array - $step;
@@ -33,7 +33,7 @@ class CaesarStand implements CaesarStandInterface
                 else while ($new_key < 0) $new_key += $alpha_length;
                 $result_string .= mb_chr($this->alphabet[$new_key]);
             } else {
-                $result_string .= $user_string->at($index);
+                $result_string .= $user_string->at($index)->get_content();
             }
         }
         return $result_string;
@@ -48,7 +48,7 @@ class CaesarStand implements CaesarStandInterface
 # Немного нестандартный шифр Цезаря, который использует не весь алфавит целиком, а только буквы, представленные в самой строке.
 # С точки зрения "секретности" такой шифр может оказаться менее полезным, но с точки зрения алгоритмической реализации, он немного интереснее.
 
-class Caesar implements CaesarInterface
+class CaesarMod implements CaesarModInterface
 {
     public function encode(string $input_string, int $step, bool $decode = False): string
     {
@@ -64,7 +64,7 @@ class Caesar implements CaesarInterface
         $result_string = "";
         for ($index = 0; $index < $user_string->length(); $index++) {
             # Находим очередной символ пользовательской строки в нашем массиве "символов".
-            $key_in_array = array_search($user_string->at($index), $chars);
+            $key_in_array = array_search($user_string->at($index)->get_content(), $chars);
             # В зависимости от флага кодирования / декодирования сдвигаем индекс в нужную сторону.
             $new_key = !$decode ? $key_in_array + $step : $key_in_array - $step;
             # Если получившийся индекс вылез за границы массива, делаем корректировку.
@@ -110,13 +110,13 @@ class Vernam implements VernamInterface
 class CryptoCipher
 {
     public $Caesar;
-    public $CaesarStand;
+    public $CaesarMod;
     public $Vernam;
 
     function __construct()
     {
         $this->Caesar = new Caesar();
-        $this->CaesarStand = new CaesarStand();
+        $this->CaesarMod = new CaesarMod();
         $this->Vernam = new Vernam();
     }
 }
